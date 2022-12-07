@@ -22,6 +22,7 @@ jasmijn.bookelmann@ru.nl}
 \maketitle
 
 \begin{abstract}
+	NOTE THAT THIS IS AN ASSIGNMENT PAPER NOT BASED ON ACTUAL RESEARCH - 
 	Skip prediction is predicting whether a user will skip a song or not. 
 	This is a good indication of how much the user likes this song.
 	Therefore, it is an important component of recommender systems. Such as the spotify algorithm. 
@@ -30,29 +31,38 @@ jasmijn.bookelmann@ru.nl}
 	Our model predicts based on this initial session whether a user will skip the next song or not.
 	For creating this model, we have first preprocessed the data by summarizing the session into unary variables. 
 	After this we apply decision trees to classify this data.
-	
-	
-	
 \end{abstract}
 
 \section{Introduction}
 Automatic recommendations are getting increasingly popular with the digitalisation of music. They have an important role in the consumption of music nowadays. [something more about how important this is]
 
 Predicting whether or not a user will skip a song is known as skip prediction. 
-Skipping is a good method to know whether a user will like a song or not. 
+This is a good method to know whether a user will like a song or not. 
 Thus it is often used in recommender systems, 
 such as the playlist creator or autoplay from Spotify. 
 
 Spotify released a database containing information about user's listening sessions. 
 [This database has nearly 130 million entires]. 
-These listening sessions contain the tracks in the order the user listened to. [They contain up to 20 tracks.]
+
+\section{Background}
+Every record has two main parts: The listening session and the track. 
+The goal of our model is to predict whether the track will be skipped based on the listening session and it's metadata.
+
+\subsection{Listening Sessions}
+The listening sessions contain the tracks in the order the user listened to. [They contain up to 20 tracks.]
 The first half of these sessions will be used to predict whether the tracks in the second half will be skipped or not. 
 
-The session entries have metadata such as: Whether the user has Spotify Premium or not, the action causing the listening session to start, the date etc. 
+The session records have the following properties: 
+Whether the user has Spotify Premium or not, 
+the action causing the listening session to start, 
+the date etc. 
 
+\subsection{Tracks}
+The track entries contain data about their audio features, 
+provided by the spotify API\@. 
+Information such as the bounciness, dancability and key.
 
-The track entries contain data about their audio features, provided by the spotify API. In addition, the duration, popularity and release year.
-
+In addition, the duration, popularity and release year.
 A track is skipped if a user did not listen to the entire track. There are three metrics which measure this: 
 \begin{itemize}
 	\item \verb|skip_1|: The track was only played very briefly
@@ -65,32 +75,69 @@ We will use \verb|skip_2| as ground-truth.
 [something more about the data]
 
 \section{Methods}
+We first preprocess the data such that it can be used to train our model.
+After this we find the optimal parameters for our model using k-fold cross validation.
+
 \subsection{Preprocessing}
-[issue of summarizing the data of a session]
+In this section we will discuss the features of every record which will be used by our data mining model.
 
-[how we summarize the data of a session]
+\subsubsection{Track Features}
+As mentioned in the Background section, every track has 21 features containing 
+it's audio features and duration, popularity and release year. 
+We will directly use the audio features
 
-[how we summarize the other data]
+\subsubsection{Session Skips}
+Our models do not take sequential data into account, 
+thus we need to summarize the session skips into single features. 
+These are the features of every track in the session indicating whether the user skipped this track or not.
+In order use this for calculations we need to convert the skip to a number. 
+We use \verb|skip_2| as indicator of whether a user skipped or not in a track, 
+just like the ground-truth. 
+If \verb|skip_2| is true, then our skip number will be equal to $1$, 
+otherwise it will be $0$.
+
+In order to summarize this we create two features:
+\begin{itemize}
+	\item \verb|%_skip|: The percentage of skips. 
+		E.g. if a user has skipped 3 out of 10 tracks \verb|%_skip| is equal to $30\%$
+	\item \verb|sd_skip|: The standard deviation of the skips. 
+	So if a user has skipped none of the tracks \verb|sd_skip| is equal to 0. 
+	Or if a user has skipped 3/10 tracks the \verb|sd_skip| is equal to $0.46$.
+	This is a measure of how irregular the user's skipping behavior is.
+\end{itemize}
 
 
-\subsection{Applying decision trees}
-[library used]
+\subsubsection{Session Accoustic Features}
+In order to summarize the accoustic data of the session tracks we create two features. 
+One features is the average accoustic data of all the skipped tracks. 
+The other feature is the average accoustic data of all the unskipped tracks.
+This allows us to see the average information of the preferenced and unpreferenced tracks.
 
-[metadata]
+\subsection{Transforming other features}
+In order to make the feature more representative of the data we also adjust the following features:
 
-[something about cross-reference]
+[The date is rewritten to be one of the 7 days of the week instead of the absolute date.]
+
+[Popularity, year of release and duration wil be kept the same.]
+
+\subsection{Selecting parameters}
+In order to optimizie our parameters we apply k-fold cross validation.
+
+
+\subsection{Applying Decision Trees}
+[something about library]
+
 
 \section{Results and Discussion}
 [results]
 
-[what could have been better]
+[what could have been better] -> [neural networks]
 
 \section{Conclusion}
 TODO
 
 \section*{Acknowledgment}
-TODO
-
+I would like to thank Tim Kersten, Ivo Melse and Dani\"{e}l Mol for giving feedback on this paper.
 
 
 \begin{thebibliography}{00}
