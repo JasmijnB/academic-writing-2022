@@ -120,13 +120,23 @@ In order to make the feature more representative of the data we also adjust the 
 
 [Popularity, year of release and duration wil be kept the same.]
 
-\subsection{Selecting parameters}
-In order to optimizie our parameters we apply k-fold cross validation.
-
-
 \subsection{Applying Decision Trees}
-[something about library]
+In order to train and apply our model, we use DecisionTreeClassificer from 
+the python library scikit-learn.
 
+\subsection{Selecting parameters}
+In order to optimize the parameters for the decision trees we apply nested k-fold cross validation. 
+K-fold cross validation is a method which given a $k$, splits the dataset into $k$ groups. 
+Then using one of the groups as training set and the others as test set, it measures the performance of the model. 
+
+We apply cross validation for the following parameter ranges: 
+In total we trained 48 models to check which parameters are optimal. 
+\begin{itemize}
+	\item max depth: 10, 15, 20, 25 
+	\item min samples split: 15, 20, 30
+	\item min weight fraction leaf: 0 1 3 5
+\end{itemize}
+This resulted in max depth = 15, min samples split = 30, min weight fraction leaf = 0.
 
 \section{Results and Discussion}
 [results]
