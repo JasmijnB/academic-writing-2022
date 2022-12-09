@@ -37,7 +37,7 @@ jasmijn.bookelmann@ru.nl}
 Automatic recommendations are getting increasingly popular with the digitalisation of music. They have an important role in the consumption of music nowadays. [something more about how important this is]
 
 Predicting whether or not a user will skip a song is known as skip prediction. 
-This is a good method to know whether a user will like a song or not. 
+This is a good method measure how much a user likes this song. 
 Thus it is often used in recommender systems, 
 such as the playlist creator or autoplay from Spotify. 
 
@@ -50,7 +50,7 @@ The goal of our model is to predict whether the track will be skipped based on t
 
 \subsection{Listening Sessions}
 The listening sessions contain the tracks in the order the user listened to. [They contain up to 20 tracks.]
-The first half of these sessions will be used to predict whether the tracks in the second half will be skipped or not. 
+The first half of these sessions are used to predict whether the tracks in the second half will be skipped or not. 
 
 The session records have the following properties: 
 Whether the user has Spotify Premium or not, 
@@ -70,7 +70,7 @@ A track is skipped if a user did not listen to the entire track. There are three
 	\item \verb|skip_3|: Most of the track was played
 	\item \verb|not_skipped|: The track was played in its entirity
 \end{itemize}
-We will use \verb|skip_2| as ground-truth.
+We use \verb|skip_2| as ground-truth.
 
 [something more about the data]
 
@@ -79,22 +79,22 @@ We first preprocess the data such that it can be used to train our model.
 After this we find the optimal parameters for our model using k-fold cross validation.
 
 \subsection{Preprocessing}
-In this section we will discuss the features of every record which will be used by our data mining model.
+In this section we discuss the features of every record which are used by our data mining model.
 
 \subsubsection{Track Features}
 As mentioned in the Background section, every track has 21 features containing 
 it's audio features and duration, popularity and release year. 
-We will directly use the audio features
+We use the audio features without any any modification.
 
 \subsubsection{Session Skips}
 Our models do not take sequential data into account, 
 thus we need to summarize the session skips into single features. 
 These are the features of every track in the session indicating whether the user skipped this track or not.
-In order use this for calculations we need to convert the skip to a number. 
+In order to use this for calculations we need to convert the skip to a number. 
 We use \verb|skip_2| as indicator of whether a user skipped or not in a track, 
 just like the ground-truth. 
-If \verb|skip_2| is true, then our skip number will be equal to $1$, 
-otherwise it will be $0$.
+If \verb|skip_2| is true, then our skip number equals $1$, 
+otherwise is $0$.
 
 In order to summarize this we create two features:
 \begin{itemize}
