@@ -34,28 +34,28 @@ jasmijn.bookelmann@ru.nl}
 \end{abstract}
 
 \section{Introduction}
-Automatic recommendations are getting increasingly popular with the digitalisation of music. They have an important role in the consumption of music nowadays. 
+Automatic recommendations are getting increasingly popular with the digitalisation of music. They have an important role in the consumption of music nowadays. [something more about how important this is]
 
 Predicting whether or not a user will skip a song is known as skip prediction. 
-Accurate skip prediction is a tool in automatic recommendation systems, as it is
-a measure for whether a user will enjoy a song\cite{b1}. 
-This can be used in systems such as the playlist creator or autoplay from Spotify. 
+This is a good method measure how much a user likes this song. 
+Thus it is often used in recommender systems, 
+such as the playlist creator or autoplay from Spotify. 
 
-We evaluate the performance of skip prediction using decision trees.
+Spotify released a database containing information about user's listening sessions. 
+[This database has nearly 130 million entires]. 
 
 \section{Background}
-In 2019 spotify released a session dataset of around 10GB filled with anonimized user listening sessions \cite{b2}. We will use this dataset in order to create, train and test our model. 
-
-Every record in this dataset has two main parts: The listening session and the track. 
-The goal of our model is to predict whether the track will be skipped based on the listening session and its metadata.
+Every record has two main parts: The listening session and the track. 
+The goal of our model is to predict whether the track will be skipped based on the listening session and it's metadata.
 
 \subsection{Listening Sessions}
-The listening sessions contain the tracks in the order the user listened to. These sessions contain up to 20 tracks.
+The listening sessions contain the tracks in the order the user listened to. [They contain up to 20 tracks.]
+The first half of these sessions are used to predict whether the tracks in the second half will be skipped or not. 
 
 The session records have the following properties: 
 Whether the user has Spotify Premium or not, 
 the action causing the listening session to start, 
-the date, etc. 
+the date etc. 
 
 \subsection{Tracks}
 The track entries contain data about their audio features, 
@@ -68,17 +68,13 @@ A track is skipped if a user did not listen to the entire track. There are three
 	\item \verb|skip_1|: The track was only played very briefly
 	\item \verb|skip_2|: The track was only played briefly
 	\item \verb|skip_3|: Most of the track was played
-	\item \verb|not_skipped|: The track was played in its entirety
+	\item \verb|not_skipped|: The track was played in its entirity
 \end{itemize}
 We use \verb|skip_2| as ground-truth.
 
 [something more about the data]
 
 \section{Methods}
-We reduce our research question to a classification problem for our model. 
-This question is formulated as follows: Assuming we have session data containing 9 songs and the track information of the 10th song, classify this track as `skipped' or `not skipped'. 
-
-
 We first preprocess the data such that it can be used to train our model.
 After this we find the optimal parameters for our model using k-fold cross validation.
 We use smaller subsets of the data with roughly 100.000 entries to train and test our model 
@@ -91,7 +87,7 @@ In section A we discuss the features of the current track, in B and C we discuss
 \subsubsection{Track Features}
 As mentioned in the Background section, every track has 21 audio features.
 As seen in table 3.1 the ranges of track features differ quite a lot.
-We have standardized this data, which avoids certain track features with larger ranges having larger impact on our model. 
+We have standardized this data, which avoids certain track features with larger ranges havinglarger impact on our model. 
 
 
 In addition to the audio features, there is also the \verb|duration|, \verb|release_year| and 
@@ -111,7 +107,7 @@ otherwise is $0$.
 In order to summarize this we create two features:
 \begin{itemize}
 	\item \verb|%_skip|: The percentage of skips. 
-		E.g., if a user has skipped 3 out of 10 tracks \verb|%_skip| is equal to $30\%$
+		E.g. if a user has skipped 3 out of 10 tracks \verb|%_skip| is equal to $30\%$
 	\item \verb|sd_skip|: The standard deviation of the skips. 
 	So if a user has skipped none of the tracks \verb|sd_skip| is equal to 0. 
 	Or if a user has skipped 3/10 tracks the \verb|sd_skip| is equal to $0.46$.
@@ -121,7 +117,7 @@ In order to summarize this we create two features:
 
 \subsubsection{Session Accoustic Features}
 In order to summarize the accoustic data of the session tracks we create two features. 
-One feature is the average accoustic data of all the skipped tracks. 
+One features is the average accoustic data of all the skipped tracks. 
 The other feature is the average accoustic data of all the unskipped tracks.
 This allows us to see the average information of the preferenced and unpreferenced tracks.
 
@@ -136,20 +132,6 @@ In addition, we expect this information to be more indicative of skipping behavi
 than the absolute date.
 
 Popularity, year of release and duration wil be kept the same.
-
-\subsection{Subset selection}
-As the data itself contains millions of tracks, and realistically we are not able to 
-process this much using our limited resources. We select sample of our data
-to train and test our model. 
-These subsets each contain 100.000 track sessions. 
-
-In order to select representative samples we apply stratified data sampling. 
-As there is an uneven distribution of skipped tracks compared to non skipped, using this method we create an evenly distributed dataset where this distribution is even. 
-This will avoid pitfalls such as underrepresentation.
-
-We select only one sample to train and select our model on. 
-Then we test this model on multiple samples to ensure it performs the same 
-accross different subsets of the data.
 
 \subsection{Model Training}
 \subsubsection{Performance Metric}
@@ -166,24 +148,23 @@ Where:
 	\item \textit{FN} = Cost of a false negative
 \end{itemize}
 
-In our accuracy metric we make the assumption that the cost of a false positive (recommending a song a user actually does not like) is worse than the cost of a false negative (not recommending a song a user might like).
+In our accuracy metric we make the assumption that the cost of a false positive (recommending a song a user actually doesn't like) is worse than the cost of a false negative (not recommending a song a user might like).
 
 From this we create the following cost matrix: \\
 \verb|table of cost matrix|
 
 In this matrix the cost of a false positive is 1.5 times this of a false negative.
 
-
-\subsubsection{Model}
+\subsubsection{Model Selection}
 In order to train and apply our model, we use the \verb|DecisionTreeClassifier| from 
-the python library scikit-learn. The advantages of this model are that it is easy to use and gives us a lot of insights in the inner workings of the decision tree. 
-In addition, it has good compatability with plotting libraries such as matplotlib.
+the python library scikit-learn.
 
+\subsubsection{Selecting parameters}
 In order to optimize the parameters for the decision trees we apply nested k-fold cross validation. 
 
 K-fold cross validation is a method which given a $k$, splits the dataset into $k$ groups. 
 Then using one of the groups as training set and the others as test set, it measures the performance of the model. 
-We set $k = 10$, which balances a decent amount of testing with a doable running time.
+We set $k = 10$ in order to make the viable 
 
 We apply cross validation for the following parameter ranges: 
 In total we trained 48 models to check which parameters are optimal. 
@@ -192,10 +173,11 @@ In total we trained 48 models to check which parameters are optimal.
 	\item min samples split: 15, 20, 30
 	\item min weight fraction leaf: 0 1 3 5
 \end{itemize}
-This resulted in max depth = 15, min samples split = 30, min weight fraction leaf = 0. With a model of 85\% accuracy.
+This resulted in max depth = 15, min samples split = 30, min weight fraction leaf = 0.
+
 
 \section{Results}
-Our model achieved an 85\% accuracy using this metric. This indicates that it was able to accurately predict whether a user will skip a song or not in most cases. When applying our model to other samples the accuracy stays the same, which shows our model performs well on other samples too.
+Our model achieved an 85\% AUC accuracy using this metric. This indicates that it was able to accurately predict whether a user will skip a song or not in most cases. 
 
 After mapping out the most influential features of our decision trees we see that US Popularity, Dancability and Average Session Skip have been the most influential in the classification.
 
@@ -218,12 +200,11 @@ In addition, by averaging the data of the sessions we lose a lot of sequential i
 In conclusion, our study has demonstrated the effectiveness of using decision tree models for predicting user behavior on Spotify. The model was able to accurately predict whether a user would skip a song or not based on the acoustic information of the song and the songs in the listening session, with an average accuracy of 85%.
 
 \section*{Acknowledgment}
-I would like to thank Tim Kersten, Ivo Melse, Dani\"{e}l Mol and Rulian Wang for giving feedback on this paper.
+I would like to thank Tim Kersten, Ivo Melse and Dani\"{e}l Mol for giving feedback on this paper.
 
 
 \begin{thebibliography}{00}
 \bibitem{b1} \verb|some relevant article|
-\bibitem{b2} \verb|source of dataset|
 \end{thebibliography}
 
 \end{document}
