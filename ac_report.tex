@@ -60,7 +60,7 @@ the date, etc.
 \subsection{Tracks}
 The track entries contain data about their audio features, 
 provided by the spotify API\@. 
-Information such as the bounciness, dancability and key.
+This is information such as the bounciness, dancability and key.
 
 In addition, the duration, popularity and release year.
 A track is skipped if a user did not listen to the entire track. There are three metrics which measure this: 
@@ -72,7 +72,6 @@ A track is skipped if a user did not listen to the entire track. There are three
 \end{itemize}
 We use \verb|skip_2| as ground-truth.
 
-[something more about the data]
 
 \section{Methods}
 We reduce our research question to a classification problem for our model. 
@@ -137,14 +136,14 @@ than the absolute date.
 
 Popularity, year of release and duration wil be kept the same.
 
-\subsection{Subset selection}
+\subsection{Sample selection}
 As the data itself contains millions of tracks, and realistically we are not able to 
 process this much using our limited resources. We select sample of our data
 to train and test our model. 
 These subsets each contain 100.000 track sessions. 
 
 In order to select representative samples we apply stratified data sampling. 
-As there is an uneven distribution of skipped tracks compared to non skipped, using this method we create an evenly distributed dataset where this distribution is even. 
+As there is an uneven distribution of skipped tracks compared to non skipped, using this method we create an evenly distributed dataset. 
 This will avoid pitfalls such as underrepresentation.
 
 We select only one sample to train and select our model on. 
@@ -186,16 +185,19 @@ Then using one of the groups as training set and the others as test set, it meas
 We set $k = 10$, which balances a decent amount of testing with a doable running time.
 
 We apply cross validation for the following parameter ranges: 
-In total we trained 48 models to check which parameters are optimal. 
 \begin{itemize}
 	\item max depth: 10, 15, 20, 25 
 	\item min samples split: 15, 20, 30
 	\item min weight fraction leaf: 0 1 3 5
 \end{itemize}
+In total we trained 48 models to check which parameters are optimal. 
 This resulted in max depth = 15, min samples split = 30, min weight fraction leaf = 0. With a model of 85\% accuracy.
 
 \section{Results}
-Our model achieved an 85\% accuracy using this metric. This indicates that it was able to accurately predict whether a user will skip a song or not in most cases. When applying our model to other samples the accuracy stays the same, which shows our model performs well on other samples too.
+Our model achieved an 85\% accuracy using F-measure. 
+And an AUC score of 79\%.
+This indicates that it was able to accurately predict whether a user will skip a song or not in most cases, with a bias towards true positives.
+When applying our model to other samples the accuracy stays the same, which shows our model performs well on other samples too.
 
 After mapping out the most influential features of our decision trees we see that US Popularity, Dancability and Average Session Skip have been the most influential in the classification.
 
@@ -208,18 +210,18 @@ Overall, our study has demonstrated the effectiveness of using decision tree mod
 We have found that decision trees are effective when applying to skip prediction. 
 Their flexibility allowed for a good prediction model.
 
-We do have a few limitations: We had to train and test the model on relatively small sets of data due to limited resources. Around 1/100th of the total data on average. 
+We do have a few limitations: We had to train and test the model on relatively small sets of data due to limited resources.  
 Thus further research could be conducted on larger sets of data to improve accuracy given stronger resources. 
 
 In addition, by averaging the data of the sessions we lose a lot of sequential information. We believe sequence-based data training models, such as sequential neural networking, might result in better accuracy.
 
+We believe further research can also delve more into machine learning algorithms using decision trees, such as random forests or boosting trees.
 
 \section{Conclusion}
 In conclusion, our study has demonstrated the effectiveness of using decision tree models for predicting user behavior on Spotify. The model was able to accurately predict whether a user would skip a song or not based on the acoustic information of the song and the songs in the listening session, with an average accuracy of 85%.
 
 \section*{Acknowledgment}
 I would like to thank Tim Kersten, Ivo Melse, Dani\"{e}l Mol and Rulian Wang for giving feedback on this paper.
-
 
 \begin{thebibliography}{00}
 \bibitem{b1} \verb|some relevant article|
